@@ -1,0 +1,16 @@
+
+body {
+    background-color: #c1e1a6;
+}
+
+div.no-script-warning {
+    font-weight: bold;
+    background: #cc0000;
+    text-align: center;
+}
+
+div.no-script-info {
+    font-weight: bold;
+    background: #66ccff;
+    text-align: center;
+}
