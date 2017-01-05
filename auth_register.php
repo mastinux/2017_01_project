@@ -38,7 +38,7 @@
             $email = sanitize_string($email);
             $email = mysqli_real_escape_string($connection, $email);
 
-            $sql_statement = "select * from shares_user where email = '$email'";
+            $sql_statement = "select * from c_user where email = '$email'";
 
             try{
                 if ( !($result = mysqli_query($connection, $sql_statement)) )
@@ -68,7 +68,7 @@
                 $password_repeated = sanitize_string($password_repeated);
                 $password_repeated = mysqli_real_escape_string($connection, $password_repeated);
 
-                $sql_statement = "insert into shares_user(first_name, last_name, email, pw) values('$name', '$surname', '$email', md5('$password'))";
+                $sql_statement = "insert into c_user(first_name, last_name, email, pw) values('$name', '$surname', '$email', md5('$password'))";
 
                 try{
                     if ( !mysqli_query($connection, $sql_statement) )

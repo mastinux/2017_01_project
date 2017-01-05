@@ -41,7 +41,7 @@
         manage_messages();
     ?>
 
-<div class="col-lg-4" id="left-panel">
+    <div class="col-lg-4" id="left-panel">
         <div class="panel panel-default">
             <div class="panel-heading">
                 <?php if ($username){?>
@@ -83,46 +83,6 @@
                 <li class="list-group-item">
                     Username: <?php echo $username;?>
                 </li>
-                <li class="list-group-item">
-                    Balance: <?php echo get_user_balance($username); ?>
-                </li>
-                <li class="list-group-item">
-                    Amount of shares: <?php echo get_user_shares_amount($username); ?>
-                </li>
-                <li class="list-group-item">
-                    <?php
-                    $shares = get_user_ordered_shares($username);
-                    if (count($shares) > 0){
-                        ?>
-                        <div class="panel panel-success">
-                                <div class="panel-heading">
-                                    <h3 class="panel-title">Your past orders</h3>
-                                </div>
-
-                                <table class="table">
-                                    <tr>
-                                        <th>Order no.</th>
-                                        <th>Type</th>
-                                        <th>Amount</th>
-                                        <th>Price</th>
-                                    </tr>
-                                    <?php
-                                    foreach ($shares as $s){
-                                        echo "<tr>";
-                                        echo "<td>".$s['shares_order_id']."</td>";
-                                        if ($s['shares_type'] == 'offer')
-                                            echo "<td>purchase</td>";
-                                        else
-                                            echo "<td>sale</td>";
-                                        echo "<td>".$s['amount']."</td>";
-                                        echo "<td>".$s['price']."</td>";
-                                        echo "</tr>";
-                                    }
-                                    ?>
-                                </table>
-                            </div>
-                    <?php } ?>
-                </li>
             </ul>
             <?php }?>
 
@@ -131,10 +91,27 @@
     </div>
 
     <div class="col-lg-8" id="right-panels">
-        <div class="panel panel-primary">
+        <div class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel-title">Shares book</h3>
+                <h3 class="panel-title">Object comments list</h3>
             </div>
+            <table class="table">
+                <tr>
+                    <th>Comment</th>
+                    <th>Points</th>
+                    <th>Appreciation</th>
+                </tr>
+                <?php
+                    // comments list
+                ?>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </table>
+            <?php
+                /*
             <table class="table">
                 <tr>
                     <th>Demand amount</th>
@@ -170,8 +147,13 @@
                 }
                 ?>
             </table>
+                */
+            ?>
         </div>
-        <?php if($username){ ?>
+
+        <?php
+            /*
+            if($username){ ?>
             <div class="panel panel-warning">
             <div class="panel-heading">
                 <h3 class="panel-title">Order</h3>
@@ -197,7 +179,10 @@
                 </div>
             </div>
         </div>
-        <?php } ?>
+        <?php }
+            */
+        ?>
+
     </div>
 
     <script type="text/javascript">

@@ -37,7 +37,7 @@
             $username = mysqli_real_escape_string($connection, $username);
             $password = mysqli_real_escape_string($connection, $password);
 
-            $sql_statement = "select * from shares_user where email = '$username' and pw = md5('$password')";
+            $sql_statement = "select * from c_user where email = '$username' and pw = md5('$password')";
 
             try {
                 if (!($result = mysqli_query($connection, $sql_statement)))

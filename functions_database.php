@@ -27,7 +27,7 @@
 
         return $connection;
     }
-
+/*
     function get_user_balance($username){
         $success = true;
         $err_msg = "";
@@ -279,6 +279,6 @@
         if( !$success )
             redirect_with_message("index.php", "d", $err_msg);
     }
-
+*/
 ?>
 
