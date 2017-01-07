@@ -25,3 +25,7 @@ create table c_appreciation(
     c_comment varchar(320) not null references c_commnet on delete cascade,
     primary key (email, c_comment)
 );
+
+use `comments_db`;
+select * from c_user;
+select * from c_comment;

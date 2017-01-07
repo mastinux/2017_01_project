@@ -41,7 +41,7 @@
         manage_messages();
     ?>
 
-    <div class="col-lg-4" id="left-panel">
+    <div class="col-lg-2" id="left-panel">
         <div class="panel panel-default">
             <div class="panel-heading">
                 <?php if ($username){?>
@@ -90,99 +90,84 @@
         </div>
     </div>
 
-    <div class="col-lg-8" id="right-panels">
+    <div class="col-lg-10" id="right-panels">
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h3 class="panel-title">Object comments list</h3>
+            </div>
+
+            <div class="panel-body">
+                Points average: <?php echo get_points_avg() ?>
             </div>
             <table class="table">
                 <tr>
                     <th>Comment</th>
                     <th>Points</th>
                     <th>Appreciation</th>
+                    <th></th>
+                    <th></th>
+                    <th></th>
                 </tr>
                 <?php
                     // comments list
+                    $rows = get_comments();
+                    foreach ($rows as $row){
+                        echo "<tr>";
+                        echo "<td>".$row['c_text']."</td>";
+                        echo "<td>".$row['c_points']."</td>";
+                        echo "<td>".$row['c_appreciation']."</td>";
+                        if ( $username != $row['email']) {
+                            echo "<td><span class=\"glyphicon glyphicon-plus-sign\" aria-hidden=\"true\"></span></td>";
+                            echo "<td><span class=\"glyphicon glyphicon-minus-sign\" aria-hidden=\"true\"></span></td>";
+                            echo "<td></td>";
+                        }
+                        else {
+                            echo "<td></td>";
+                            echo "<td></td>";
+                            echo "
+                                <td>
+                                    <form method='post' action='remove.php'>
+                                        <button type=\"submit\"  class=\"btn btn-default\">
+                                            <span class=\"glyphicon glyphicon-remove-sign\" aria-hidden=\"true\"></span>
+                                        </button>
+                                    </form>
+                                </td>
+                            ";
+                        }
+                        echo "</tr>";
+                    }
                 ?>
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                </tr>
             </table>
-            <?php
-                /*
-            <table class="table">
-                <tr>
-                    <th>Demand amount</th>
-                    <th>Demand price</th>
-                    <th>Offer price</th>
-                    <th>Offer amount</th>
-                </tr>
-                <?php
-                $demand_shares = get_demand_shares();
-                if ( count($demand_shares) > TABLE_ROWS)
-                    array_slice($demand_shares, 0, 5);
-                $demand_dimension = count($demand_shares);
-                $offer_shares = get_offer_shares();
-                if ( count($offer_shares) > TABLE_ROWS)
-                    array_slice($offer_shares, 0, 5);
-                $offer_dimension = count($offer_shares);
 
-                for ($i = 0; $i < TABLE_ROWS; $i++){
-                    echo "<tr>";
-                    if ($i < $demand_dimension){
-                        echo "<td>".$demand_shares[$i]['amount']."</td>";
-                        echo "<td>".$demand_shares[$i]['price']."</td>";
-                    }
-                    else
-                        echo "<td></td><td></td>";
-                    if ($i < $offer_dimension){
-                        echo "<td>".$offer_shares[$i]['amount']."</td>";
-                        echo "<td>".$offer_shares[$i]['price']."</td>";
-                    }
-                    else
-                        echo "<td></td><td></td>";
-                    echo "</tr>";
-                }
-                ?>
-            </table>
-                */
-            ?>
         </div>
 
-        <?php
-            /*
-            if($username){ ?>
-            <div class="panel panel-warning">
+        <div class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel-title">Order</h3>
+                <h3 class="panel-title">Insert comment</h3>
             </div>
             <div class="panel-body">
-                <div class="input-group col-lg-12">
-                    <form method="post" action="z_order.php" onsubmit="return checkAmount();">
+                <div class="col-lg-12">
+
+                    <form method="post" action="insert.php">
                         <div class="input-group">
-                            <span class="input-group-addon">Amount</span>
-                            <input type="number" min="0" step="1" value="0" id="amount-of-shares"
-                                   name="amount" class="form-control" aria-describedby="basic-addon1">
+                            <span class="input-group-addon" id="basic-addon1">Comment</span>
+                            <input type="text" name="comment" placeholder="Your comment"
+                                   class="form-control" aria-describedby="basic-addon1">
                         </div>
-                        <div class="btn-group btn-group-justified" role="group" aria-label="...">
-                            <div class="btn-group" role="group">
-                                <input type="submit" name="type" class="btn btn-default" value="Sell"/>
-                            </div>
-                            <div class="btn-group" role="group">
-                                <input type="submit" name="type" class="btn btn-default" value="Buy"/>
-                            </div>
+                        <div class="input-group">
+                            <span class="input-group-addon">Points</span>
+                            <input type="number" min="0" max="5" step="1" value="0" name="points"
+                                   class="form-control" aria-describedby="basic-addon1">
+                            <br>
                         </div>
+                        <button type="submit" class="btn btn-default">
+                            <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
+                        </button>
                     </form>
 
                 </div>
             </div>
         </div>
-        <?php }
-            */
-        ?>
-
     </div>
 
     <script type="text/javascript">
@@ -198,5 +183,6 @@
     <script type="text/javascript" src="bootstrap/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="bootstrap/js/bootstrap.min.js"></script>
+
 </body>
 </html>

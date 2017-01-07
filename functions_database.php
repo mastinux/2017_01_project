@@ -27,6 +27,113 @@
 
         return $connection;
     }
+
+    function get_points_avg(){
+        $success = true;
+        $err_msg = "";
+
+        $connection = connect_to_database();
+
+        $sql_statement = "select avg(c_points) as points_avg from c_comment";
+
+        try{
+            if ( !($result = mysqli_query($connection, $sql_statement)) )
+                throw new Exception("Problems while retrieving points mean.");
+        }catch (Exception $e){
+            $success = false;
+            $err_msg = $e->getMessage();
+        }
+
+        if ( !$success)
+            redirect_with_message("index.php", "d", $err_msg);
+
+        $row = mysqli_fetch_assoc($result);
+
+        $points_avg = $row['points_avg'];
+
+        mysqli_free_result($result);
+        mysqli_close($connection);
+
+        return round($points_avg, 1);
+    }
+
+    function insert_comment($username, $comment, $points){
+        $success = true;
+        $err_msg = "";
+
+        $connection = connect_to_database();
+
+        try {
+            // insert comment
+            $sql_statement = "insert into c_comment(email, c_text, c_points) values('$username', '$comment', '$points')";
+            if ( !mysqli_query($connection, $sql_statement) )
+                throw new Exception("You already inserted a comment.");
+
+        } catch (Exception $e) {
+            mysqli_rollback($connection);
+            $success = false;
+            $err_msg = $e->getMessage();
+        }
+
+        mysqli_close($connection);
+
+        if( !$success )
+            redirect_with_message("index.php", "d", $err_msg);
+    }
+
+    function remove_comment($username){
+        $success = true;
+        $err_msg = "";
+
+        $connection = connect_to_database();
+
+        try {
+            // insert comment
+            $sql_statement = "delete from c_comment where email='$username'";
+            if ( !mysqli_query($connection, $sql_statement) )
+                throw new Exception("Problems while removing your comment.");
+
+        } catch (Exception $e) {
+            mysqli_rollback($connection);
+            $success = false;
+            $err_msg = $e->getMessage();
+        }
+
+        mysqli_close($connection);
+
+        if( !$success )
+            redirect_with_message("index.php", "d", $err_msg);
+    }
+
+    function get_comments(){
+        $rows = Array();
+        $success = true;
+        $err_msg = "";
+
+        $connection = connect_to_database();
+
+        $sql_statement = "select * from c_comment";
+
+        try{
+            if ( !($result = mysqli_query($connection, $sql_statement)) )
+                throw new Exception("Problems while retrieving comments.");
+        }catch (Exception $e){
+            $success = false;
+            $err_msg = $e->getMessage();
+        }
+
+        if ( !$success)
+            redirect_with_message("index.php", "d", $err_msg);
+
+        while ($row = mysqli_fetch_assoc($result))
+            $rows[] = $row;
+
+        mysqli_free_result($result);
+        mysqli_close($connection);
+
+        return $rows;
+    }
+
 /*
     function get_user_balance($username){
         $success = true;
