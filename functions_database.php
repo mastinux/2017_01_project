@@ -134,6 +134,64 @@
         return $rows;
     }
 
+    function count_past_judgment($username, $c_email){
+        $success = true;
+        $err_msg = "";
+
+        $connection = connect_to_database();
+
+        $sql_statement = "select count(*) as count from c_judge where email = '$username' and c_comment = '$c_email'";
+
+        try{
+            if ( !($result = mysqli_query($connection, $sql_statement)) )
+                throw new Exception("Problems while counting past judgment.");
+        }catch (Exception $e){
+            $success = false;
+            $err_msg = $e->getMessage();
+        }
+
+        if ( !$success)
+            redirect_with_message("index.php", "d", $err_msg);
+
+        $row = mysqli_fetch_assoc($result);
+
+        $count = $row['count'];
+
+        mysqli_free_result($result);
+        mysqli_close($connection);
+
+        return $count;
+    }
+
+    function insert_judgment($username, $c_email, $sign){
+        $success = true;
+        $err_msg = "";
+
+        if (count_past_judgment($username, $c_email) > 3)
+            redirect_with_message("index.php", "w", "You already judged 3 times for this comment.");
+
+        $connection = connect_to_database();
+
+        // TODO: resolve judge count problem
+
+        try {
+            // judge statement
+            $sql_statement = "insert into c_judge(email, c_comment, sign) values('$username', '$c_email', '$sign')";
+            if ( !mysqli_query($connection, $sql_statement) )
+                throw new Exception("Problems while inserting judgement.");
+            
+        } catch (Exception $e) {
+            mysqli_rollback($connection);
+            $success = false;
+            $err_msg = $e->getMessage();
+        }
+
+        mysqli_close($connection);
+
+        if( !$success )
+            redirect_with_message("index.php", "d", $err_msg);
+    }
+
 /*
     function get_user_balance($username){
         $success = true;

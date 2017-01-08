@@ -116,23 +116,47 @@
                         echo "<td>".$row['c_text']."</td>";
                         echo "<td>".$row['c_points']."</td>";
                         echo "<td>".$row['c_appreciation']."</td>";
-                        if ( $username != $row['email']) {
-                            echo "<td><span class=\"glyphicon glyphicon-plus-sign\" aria-hidden=\"true\"></span></td>";
-                            echo "<td><span class=\"glyphicon glyphicon-minus-sign\" aria-hidden=\"true\"></span></td>";
+                        if (! $username){
+                            echo "<td></td>";
+                            echo "<td></td>";
                             echo "<td></td>";
                         }
+                        else if ( $username != $row['email']) {
+                ?>
+                            <td>
+                                <form method="post" action="judge.php">
+                                    <input hidden value="plus" name="sign">
+                                    <button type="submit" name="c_email" value="<?php echo $row['email'] ?>"
+                                            class="btn btn-default">
+                                        <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
+                                    </button>
+                                </form>
+                            </td>
+                            <td>
+                                <form method="post" action="judge.php">
+                                    <input hidden value="minus" name="sign">
+                                    <button type="submit" name="c_email" value="<?php echo $row['email'] ?>"
+                                            class="btn btn-default">
+                                        <span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span>
+                                    </button>
+                                </form>
+                            </td>
+                            <td></td>
+                <?php
+                        }
                         else {
-                            echo "<td></td>";
-                            echo "<td></td>";
-                            echo "
-                                <td>
-                                    <form method='post' action='remove.php'>
-                                        <button type=\"submit\"  class=\"btn btn-default\">
-                                            <span class=\"glyphicon glyphicon-remove-sign\" aria-hidden=\"true\"></span>
-                                        </button>
-                                    </form>
-                                </td>
-                            ";
+                ?>
+                            <td></td>
+                            <td></td>
+                            <td>
+                                <form method='post' action='remove.php'>
+                                    <button type="submit"  class="btn btn-default">
+                                        <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>
+                                    </button>
+                                </form>
+                            </td>
+                <?php
+
                         }
                         echo "</tr>";
                     }
@@ -148,22 +172,35 @@
             <div class="panel-body">
                 <div class="col-lg-12">
 
-                    <form method="post" action="insert.php">
-                        <div class="input-group">
-                            <span class="input-group-addon" id="basic-addon1">Comment</span>
-                            <input type="text" name="comment" placeholder="Your comment"
-                                   class="form-control" aria-describedby="basic-addon1">
+                    <?php
+                        if ($username) {
+                    ?>
+                        <form method="post" action="insert.php">
+                            <div class="input-group">
+                                <span class="input-group-addon" id="basic-addon1">Comment</span>
+                                <input type="text" name="comment" placeholder="Your comment"
+                                       class="form-control" aria-describedby="basic-addon1">
+                            </div>
+                            <div class="input-group">
+                                <span class="input-group-addon">Points</span>
+                                <input type="number" min="0" max="5" step="1" value="0" name="points"
+                                       class="form-control" aria-describedby="basic-addon1">
+                                <br>
+                            </div>
+                            <button type="submit" class="btn btn-default">
+                                <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
+                            </button>
+                        </form>
+                    <?php
+                        }else{
+                    ?>
+                        <div class="alert alert-info" role="alert">
+                            <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+                            To insert a comment or make a judgment, please log in or register.
                         </div>
-                        <div class="input-group">
-                            <span class="input-group-addon">Points</span>
-                            <input type="number" min="0" max="5" step="1" value="0" name="points"
-                                   class="form-control" aria-describedby="basic-addon1">
-                            <br>
-                        </div>
-                        <button type="submit" class="btn btn-default">
-                            <span class="glyphicon glyphicon-ok-sign" aria-hidden="true"></span>
-                        </button>
-                    </form>
+                    <?php
+                        }
+                    ?>
 
                 </div>
             </div>
