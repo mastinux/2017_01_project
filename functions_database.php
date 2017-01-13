@@ -236,8 +236,8 @@
     }
 
     function update_judgment($username, $c_email, $sign){
-        
-        // TODO : set c_judge_count max value  = 3
+
+        // TODO : continue developing, c_judge_count max value  = 3
 
         $success = true;
         $err_msg = "";

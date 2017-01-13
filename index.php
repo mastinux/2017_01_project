@@ -109,6 +109,7 @@
                     <th></th>
                 </tr>
                 <?php
+                    // TODO: delete this TODO
                     // comments list
                     $rows = get_comments();
                     foreach ($rows as $row){
