@@ -97,7 +97,7 @@
             </div>
 
             <div class="panel-body">
-                Points average: <?php echo get_points_avg() ?>
+                Average points: <?php echo get_points_avg() ?>
             </div>
             <table class="table">
                 <tr>
@@ -115,7 +115,7 @@
                         echo "<tr>";
                         echo "<td>".$row['c_text']."</td>";
                         echo "<td>".$row['c_points']."</td>";
-                        echo "<td>".$row['c_appreciation']."</td>";
+                        echo "<td>".get_comment_judge_summary($row['email'])."</td>";
                         if (! $username){
                             echo "<td></td>";
                             echo "<td></td>";

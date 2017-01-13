@@ -64,13 +64,12 @@
         $connection = connect_to_database();
 
         try {
-            // insert comment
+            // inserting comment
             $sql_statement = "insert into c_comment(email, c_text, c_points) values('$username', '$comment', '$points')";
             if ( !mysqli_query($connection, $sql_statement) )
                 throw new Exception("You already inserted a comment.");
 
         } catch (Exception $e) {
-            mysqli_rollback($connection);
             $success = false;
             $err_msg = $e->getMessage();
         }
@@ -88,13 +87,12 @@
         $connection = connect_to_database();
 
         try {
-            // insert comment
+            // deleting comment
             $sql_statement = "delete from c_comment where email='$username'";
             if ( !mysqli_query($connection, $sql_statement) )
                 throw new Exception("Problems while removing your comment.");
 
         } catch (Exception $e) {
-            mysqli_rollback($connection);
             $success = false;
             $err_msg = $e->getMessage();
         }
@@ -134,17 +132,20 @@
         return $rows;
     }
 
-    function count_past_judgment($username, $c_email){
+    function get_comment_judge($username, $sign){
         $success = true;
         $err_msg = "";
 
         $connection = connect_to_database();
 
-        $sql_statement = "select count(*) as count from c_judge where email = '$username' and c_comment = '$c_email'";
+        if ( $sign == "plus" )
+            $sql_statement = "select sum(plus_count) as s from c_judge where c_comment = '$username'";
+        else
+            $sql_statement = "select sum(minus_count) as s from c_judge where c_comment = '$username'";
 
         try{
             if ( !($result = mysqli_query($connection, $sql_statement)) )
-                throw new Exception("Problems while counting past judgment.");
+                throw new Exception("Problems while counting judgements.");
         }catch (Exception $e){
             $success = false;
             $err_msg = $e->getMessage();
@@ -155,33 +156,75 @@
 
         $row = mysqli_fetch_assoc($result);
 
-        $count = $row['count'];
+        $s = $row['s'];
 
         mysqli_free_result($result);
         mysqli_close($connection);
 
-        return $count;
+        return $s;
     }
 
-    function insert_judgment($username, $c_email, $sign){
+    function get_comment_judge_summary($username){
+        return get_comment_judge($username, "plus") - get_comment_judge($username, "minus");
+    }
+
+    function judgment_exists($username, $c_email)
+    {
         $success = true;
         $err_msg = "";
 
-        if (count_past_judgment($username, $c_email) > 3)
-            redirect_with_message("index.php", "w", "You already judged 3 times for this comment.");
+        $connection = connect_to_database();
+
+        $sql_statement = "select count(*) as n from c_judge where email = '$username' and c_comment = '$c_email'";
+
+        try {
+            if (!($result = mysqli_query($connection, $sql_statement)))
+                throw new Exception("Problems while checking if judgment already exists.");
+        } catch (Exception $e) {
+            $success = false;
+            $err_msg = $e->getMessage();
+        }
+
+        if (!$success)
+            redirect_with_message("index.php", "d", $err_msg);
+
+        $row = mysqli_fetch_assoc($result);
+
+        $n = $row['n'];
+
+        mysqli_free_result($result);
+        mysqli_close($connection);
+
+        if ($n == "0")
+            return False;
+        else
+            return True;
+    }
+
+    function insert_new_judgment($username, $c_email, $sign){
+        $success = true;
+        $err_msg = "";
+
 
         $connection = connect_to_database();
 
-        // TODO: resolve judge count problem
+        if ( $sign == "plus" ) {
+            $p = 1;
+            $m = 0;
+        }
+        else {
+            $p = 0;
+            $m = 1;
+        }
 
         try {
-            // judge statement
-            $sql_statement = "insert into c_judge(email, c_comment, sign) values('$username', '$c_email', '$sign')";
+            // insert
+            $sql_statement = "insert into c_judge(email, c_comment, plus_count, minus_count) 
+                          values('$username', '$c_email', $p, $m)";
             if ( !mysqli_query($connection, $sql_statement) )
-                throw new Exception("Problems while inserting judgement.");
-            
+                throw new Exception("Problems while inserting new judgment.");
+
         } catch (Exception $e) {
-            mysqli_rollback($connection);
             $success = false;
             $err_msg = $e->getMessage();
         }
@@ -190,6 +233,47 @@
 
         if( !$success )
             redirect_with_message("index.php", "d", $err_msg);
+    }
+
+    function update_judgment($username, $c_email, $sign){
+        
+        // TODO : set c_judge_count max value  = 3
+
+        $success = true;
+        $err_msg = "";
+
+        $connection = connect_to_database();
+
+        try {
+            // preparing increment
+            if ( $sign == "plus" )
+                $sql_statement = "update c_judge
+                    set plus_count = (plus_count + 1), c_judge_count = (c_judge_count + 1)  
+                    where email = '$username' and c_comment = '$c_email'";
+            else
+                $sql_statement = "update c_judge
+                    set minus_count = (minus_count + 1), c_judge_count = (c_judge_count + 1)  
+                    where email = '$username' and c_comment = '$c_email'";
+
+            if ( !mysqli_query($connection, $sql_statement) )
+                throw new Exception("You have exceeded 3 judgment for this comment.".$sql_statement);
+
+        } catch (Exception $e) {
+            $success = false;
+            $err_msg = $e->getMessage();
+        }
+
+        mysqli_close($connection);
+
+        if( !$success )
+            redirect_with_message("index.php", "d", $err_msg);
+    }
+
+    function insert_judgment($username, $c_email, $sign){
+        if ( judgment_exists($username, $c_email) == true)
+            update_judgment($username, $c_email, $sign);
+        else
+            insert_new_judgment($username, $c_email, $sign);
     }
 
 /*
