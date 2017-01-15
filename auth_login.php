@@ -4,8 +4,8 @@
     include 'functions_database.php';
     include 'functions_messages.php';
 
-    set_https();
     check_enabled_cookies();
+    set_https();
 
 ?>
 <!DOCTYPE html>
@@ -27,8 +27,8 @@
     <script type="text/javascript" src="bootstrap/respond.min.js"></script>
     <![endif]-->
 
-    <link href="z_shares_style.css" rel="stylesheet" type="text/css"/>
-    <script type="text/javascript" src="general_functions.js"></script>
+    <link href="site_style.css" rel="stylesheet" type="text/css"/>
+    <script type="text/javascript" src="site_functions.js"></script>
     <script type="text/javascript" src="auth_functions.js"></script>
 </head>
 <body>

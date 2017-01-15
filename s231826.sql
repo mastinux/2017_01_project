@@ -1,8 +1,4 @@
-DROP database IF EXISTS `comments_db`;
-
-create database `comments_db`;
-
-use `comments_db`;
+use s231826;
 
 create table c_user(
 	first_name varchar(320) not null,
@@ -25,7 +21,7 @@ create table c_judge(
     c_comment varchar(320) not null,
     plus_count tinyint not null default 0,
     minus_count tinyint not null default 0,
-    c_judge_count tinyint not null default 1 check (c_judge_count between 1 and 3),    
+    c_judge_count tinyint not null default 1 check (c_judge_count between 1 and 3),
     primary key (email, c_comment)
 );
 
@@ -49,12 +45,12 @@ insert into c_comment(email, c_text, c_points) values('u1@p.it', 'Migliorabile.'
 insert into c_comment(email, c_text, c_points) values('u2@p.it', 'Da provare.', 4);
 insert into c_comment(email, c_text, c_points) values('u3@p.it', 'Pessimo.', 1);
 
-insert into c_judge(email, c_comment, plus_count, minus_count, c_judge_count) 
+insert into c_judge(email, c_comment, plus_count, minus_count, c_judge_count)
 values('u1@p.it', 'u2@p.it', 3, 0, 3);
-insert into c_judge(email, c_comment, plus_count, minus_count, c_judge_count) 
+insert into c_judge(email, c_comment, plus_count, minus_count, c_judge_count)
 values('u1@p.it', 'u3@p.it', 1, 0, 1);
 
-insert into c_judge(email, c_comment, plus_count, minus_count, c_judge_count) 
+insert into c_judge(email, c_comment, plus_count, minus_count, c_judge_count)
 values('u2@p.it', 'u1@p.it', 0, 1, 1);
-insert into c_judge(email, c_comment, plus_count, minus_count, c_judge_count) 
+insert into c_judge(email, c_comment, plus_count, minus_count, c_judge_count)
 values('u2@p.it', 'u3@p.it', 0, 2, 2);

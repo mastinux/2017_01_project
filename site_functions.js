@@ -37,3 +37,7 @@ function printMessage(type, msg) {
 
     button.appendChild(span);
 }
+
+function printCookieDisabledMessage() {
+    printMessage('warning', 'Cookies disabled, to use this site you have to enable them.')
+}

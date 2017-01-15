@@ -1,13 +1,19 @@
 <?php
     include 'global_settings.php';
 
+    function redirect_https(){
+        header("Location: https://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]);
+        exit();
+    }
+
     function set_https(){
-        if(isset($_SERVER["HTTPS"])) {
-            if ($_SERVER["HTTPS"] != "on") {
-                header("Location: https://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]);
-                exit();
+        if( isset($_SERVER["HTTPS"]) ) {
+            if ( $_SERVER["HTTPS"] != "on" ) {
+                redirect_https();
             }
         }
+        else
+            redirect_https();
     }
 
     function unset_https(){
@@ -24,9 +30,12 @@
     }
 
     function check_enabled_cookies(){
-        setcookie('test', 'test', time() + 60*60);
-        if ( !isset($_COOKIE['test']) )
-            redirect_with_message("index.php", "w", "In order to use our site please enable cookies.");
+        if ( empty($_SERVER['QUERY_STRING']) ) {
+            if (!isset($_COOKIE['test'])) {
+                setcookie('test', 'test', time() + 60 * 60);
+                redirect_with_message("cookie_test.php", "i", "Testing cookies.");
+            }
+        }
     }
 
     function redirect_with_message($page, $message_type, $message){

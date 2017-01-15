@@ -1,9 +1,11 @@
 <?php
+
     include 'functions.php';
     include 'functions_database.php';
     include 'functions_messages.php';
 
     session_start();
+    check_enabled_cookies();
     if ( $username = user_logged_in() ){
         include 'auth_sessions.php';
         set_https();
@@ -28,8 +30,8 @@
     <script type="text/javascript" src="bootstrap/respond.min.js"></script>
     <![endif]-->
 
-    <link href="z_shares_style.css" rel="stylesheet" type="text/css"/>
-    <script type="text/javascript" src="general_functions.js"></script>
+    <link href="site_style.css" rel="stylesheet" type="text/css"/>
+    <script type="text/javascript" src="site_functions.js"></script>
     <script type="text/javascript" src="z_shares_functions.js"></script>
 </head>
 
@@ -96,7 +98,7 @@
                 <h3 class="panel-title">Object comments list</h3>
             </div>
 
-            <div class="panel-body">
+            <div class="panel-body text-center">
                 Average points: <?php echo get_points_avg() ?>
             </div>
             <table class="table">
@@ -104,12 +106,12 @@
                     <th>Comment</th>
                     <th>Points</th>
                     <th>Appreciation</th>
-                    <th></th>
-                    <th></th>
-                    <th></th>
+                    <?php
+                        if ($username)
+                            echo "<th></th><th></th><th></th>"
+                    ?>
                 </tr>
                 <?php
-                    // TODO: delete this TODO
                     // comments list
                     $rows = get_comments();
                     foreach ($rows as $row){
@@ -117,53 +119,47 @@
                         echo "<td>".$row['c_text']."</td>";
                         echo "<td>".$row['c_points']."</td>";
                         echo "<td>".get_comment_judge_summary($row['email'])."</td>";
-                        if (! $username){
-                            echo "<td></td>";
-                            echo "<td></td>";
-                            echo "<td></td>";
-                        }
-                        else if ( $username != $row['email']) {
-                ?>
-                            <td>
-                                <form method="post" action="judge.php">
-                                    <input hidden value="plus" name="sign">
-                                    <button type="submit" name="c_email" value="<?php echo $row['email'] ?>"
-                                            class="btn btn-default">
-                                        <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
-                                    </button>
-                                </form>
-                            </td>
-                            <td>
-                                <form method="post" action="judge.php">
-                                    <input hidden value="minus" name="sign">
-                                    <button type="submit" name="c_email" value="<?php echo $row['email'] ?>"
-                                            class="btn btn-default">
-                                        <span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span>
-                                    </button>
-                                </form>
-                            </td>
-                            <td></td>
-                <?php
-                        }
-                        else {
-                ?>
-                            <td></td>
-                            <td></td>
-                            <td>
-                                <form method='post' action='remove.php'>
-                                    <button type="submit"  class="btn btn-default">
-                                        <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>
-                                    </button>
-                                </form>
-                            </td>
-                <?php
-
+                        if ($username) {
+                            if ($username != $row['email']) {
+                                ?>
+                                <td>
+                                    <form method="post" action="comment_judge.php">
+                                        <input hidden value="plus" name="sign">
+                                        <button type="submit" name="c_email" value="<?php echo $row['email'] ?>"
+                                                class="btn btn-default">
+                                            <span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
+                                        </button>
+                                    </form>
+                                </td>
+                                <td>
+                                    <form method="post" action="comment_judge.php">
+                                        <input hidden value="minus" name="sign">
+                                        <button type="submit" name="c_email" value="<?php echo $row['email'] ?>"
+                                                class="btn btn-default">
+                                            <span class="glyphicon glyphicon-minus-sign" aria-hidden="true"></span>
+                                        </button>
+                                    </form>
+                                </td>
+                                <td></td>
+                                <?php
+                            } else {
+                                ?>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <form method='post' action='comment_remove.php'>
+                                        <button type="submit" class="btn btn-default">
+                                            <span class="glyphicon glyphicon-remove-sign" aria-hidden="true"></span>
+                                        </button>
+                                    </form>
+                                </td>
+                            <?php
+                            }
                         }
                         echo "</tr>";
                     }
                 ?>
             </table>
-
         </div>
 
         <div class="panel panel-default">
@@ -176,10 +172,10 @@
                     <?php
                         if ($username) {
                     ?>
-                        <form method="post" action="insert.php">
+                        <form method="post" action="comment_insert.php">
                             <div class="input-group">
                                 <span class="input-group-addon" id="basic-addon1">Comment</span>
-                                <input type="text" name="comment" placeholder="Your comment"
+                                <input type="text" name="comment" placeholder="Your comment here."
                                        class="form-control" aria-describedby="basic-addon1">
                             </div>
                             <div class="input-group">
@@ -213,7 +209,7 @@
             // preventing site usage
             removeElementById('left-panel');
             removeElementById('right-panels');
-            printCookieDisabledMessage();
+            // printCookieDisabledMessage();
         }
     </script>
 

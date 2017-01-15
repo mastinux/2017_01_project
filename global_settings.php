@@ -6,6 +6,6 @@
     define("DB_DATABASE", "comments_db");
 
     // session
-    define("SESSION_TIMEOUT", 60*60); //seconds
+    define("SESSION_TIMEOUT", 2*60); //seconds
 ?>
 
